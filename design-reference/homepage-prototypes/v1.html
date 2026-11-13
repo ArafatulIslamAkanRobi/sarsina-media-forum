@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ছারছীনা মিডিয়া ফোরাম</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16231C;
+    --parchment:#F5EFDD;
+    --parchment-deep:#EBE1C4;
+    --forest:#1F4D3D;
+    --forest-dark:#12332A;
+    --brass:#A9762F;
+    --brass-light:#C99A46;
+    --maroon:#6B1F26;
+    --text:#1D2A22;
+    --text-soft:#4B5A50;
+    --line: rgba(22,35,28,0.12);
+    --font-display:'Noto Serif Bengali', serif;
+    --font-body:'Hind Siliguri', sans-serif;
+    --container: 1180px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--parchment);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:var(--font-display);
+    color:var(--ink);
+    margin:0;
+    line-height:1.3;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:var(--container); margin:0 auto; padding:0 28px;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-size:14px; letter-spacing:0.14em;
+    color:var(--maroon); font-weight:600;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:""; width:22px; height:1.5px; background:var(--maroon); display:inline-block;
+  }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    padding:14px 30px; border-radius:4px; font-weight:600; font-size:16px;
+    cursor:pointer; border:1.5px solid transparent; transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--forest); color:var(--parchment);}
+  .btn-primary:hover{box-shadow:0 10px 24px rgba(31,77,61,0.28);}
+  .btn-outline{background:transparent; color:var(--ink); border-color:var(--ink);}
+  .btn-brass{background:var(--brass); color:var(--parchment);}
+  .btn-brass:hover{box-shadow:0 10px 24px rgba(169,118,47,0.32);}
+
+  /* ---------- Jali lattice pattern (signature motif) ---------- */
+  .jali-divider{
+    height:26px;
+    background-image: repeating-linear-gradient(45deg, transparent 0 11px, var(--brass) 11px 12.5px, transparent 12.5px 23px),
+                       repeating-linear-gradient(-45deg, transparent 0 11px, var(--brass) 11px 12.5px, transparent 12.5px 23px);
+    opacity:0.35;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--forest-dark);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:12px;
+    color:var(--parchment);
+  }
+  .brand-mark{
+    width:38px; height:38px;
+    background:var(--brass);
+    clip-path: path('M19 0 C 30 0 38 10 38 22 L38 38 L0 38 L0 22 C0 10 8 0 19 0 Z');
+    flex-shrink:0;
+  }
+  .brand-text .name{font-family:var(--font-display); font-size:19px; font-weight:600;}
+  .brand-text .sub{font-size:12px; color:var(--brass-light); letter-spacing:0.04em;}
+
+  nav.links{display:flex; gap:30px; align-items:center;}
+  nav.links a{color:rgba(245,239,221,0.85); font-size:15px; font-weight:500; padding:4px 0; border-bottom:2px solid transparent; transition:.2s;}
+  nav.links a:hover{color:var(--parchment); border-color:var(--brass-light);}
+  .nav-cta{display:flex; align-items:center; gap:14px;}
+  .nav-cta .btn{padding:10px 22px; font-size:14px;}
+
+  .menu-toggle{display:none; background:none; border:none; cursor:pointer; padding:6px;}
+  .menu-toggle span{display:block; width:24px; height:2px; background:var(--parchment); margin:5px 0;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:76px 0 60px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero .wrap{
+    display:grid; grid-template-columns:1.05fr 0.9fr; gap:50px; align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(34px, 5vw, 54px);
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .hero p.lede{
+    margin-top:20px; font-size:18px; color:var(--text-soft); max-width:46ch;
+  }
+  .hero-ctas{display:flex; gap:16px; margin-top:34px; flex-wrap:wrap;}
+
+  .arch-frame{
+    position:relative;
+    width:100%; max-width:420px; margin:0 auto;
+    aspect-ratio: 3 / 3.6;
+    background:var(--forest);
+    border-radius: 50% 50% 6px 6px / 32% 32% 0 0;
+    overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(18,51,42,0.45);
+  }
+  .arch-frame svg{position:absolute; inset:0; width:100%; height:100%;}
+  .arch-frame .arch-inner-line{
+    position:absolute; inset:16px;
+    border:1.5px solid rgba(201,154,70,0.55);
+    border-radius: 50% 50% 4px 4px / 32% 32% 0 0;
+  }
+  .arch-crescent{
+    position:absolute; top:14%; left:50%; transform:translateX(-50%);
+    width:56px; height:56px;
+  }
+
+  /* ---------- Ticker ---------- */
+  .ticker{
+    background:var(--maroon); color:var(--parchment);
+    overflow:hidden; white-space:nowrap; position:relative;
+  }
+  .ticker-track{
+    display:inline-flex; gap:60px; padding:12px 0;
+    animation: scroll-left 26s linear infinite;
+  }
+  .ticker span{font-size:14px; letter-spacing:0.02em;}
+  @keyframes scroll-left{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none;}
+  }
+
+  /* ---------- Section shells ---------- */
+  section{padding:86px 0;}
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:24px;
+    margin-bottom:48px; flex-wrap:wrap;
+  }
+  .section-head h2{font-size:clamp(26px,3.4vw,36px); max-width:22ch;}
+  .section-head p{color:var(--text-soft); max-width:42ch; font-size:15.5px;}
+  .section-dark{background:var(--forest-dark); color:var(--parchment);}
+  .section-dark h2, .section-dark h3, .section-dark h4{color:var(--parchment);}
+  .section-dark .eyebrow{color:var(--brass-light);}
+  .section-dark .eyebrow::before{background:var(--brass-light);}
+  .section-dark p.sub{color:rgba(245,239,221,0.72);}
+
+  /* ---------- Arch cards (signature element) ---------- */
+  .grid{display:grid; gap:26px;}
+  .grid-3{grid-template-columns:repeat(3,1fr);}
+  .grid-4{grid-template-columns:repeat(4,1fr);}
+
+  .arch-card{
+    background:var(--parchment); border:1px solid var(--line);
+    border-radius: 0 0 8px 8px;
+    overflow:hidden;
+  }
+  .arch-card-top{
+    height:96px;
+    background:linear-gradient(160deg, var(--forest), var(--forest-dark));
+    border-radius:50% 50% 0 0 / 70% 70% 0 0;
+    margin:0 18px; margin-top:18px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .arch-card-top svg{width:34px; height:34px;}
+  .arch-card-body{padding:22px 24px 26px;}
+  .arch-card-body h3{font-size:19px; margin-bottom:10px;}
+  .arch-card-body p{font-size:14.5px; color:var(--text-soft); margin-bottom:16px;}
+  .arch-card .date{font-size:13px; color:var(--brass); font-weight:600; margin-bottom:8px; display:block;}
+
+  /* News cards on light bg use maroon text-soft variant */
+  .news-card .arch-card-top{background:linear-gradient(160deg, var(--maroon), #4A1319);}
+
+  /* Progress bars for donation cards */
+  .progress{
+    height:8px; background:rgba(255,255,255,0.14); border-radius:6px; overflow:hidden; margin:14px 0 6px;
+  }
+  .progress i{display:block; height:100%; background:var(--brass-light); border-radius:6px;}
+  .progress-label{display:flex; justify-content:space-between; font-size:13px; color:rgba(245,239,221,0.75); margin-bottom:18px;}
+
+  .donation-card{
+    background:rgba(245,239,221,0.06);
+    border:1px solid rgba(245,239,221,0.14);
+    border-radius:0 0 8px 8px;
+    overflow:hidden;
+  }
+  .donation-card .arch-card-top{background:linear-gradient(160deg, var(--brass-light), var(--brass));}
+  .donation-card-body{padding:22px 24px 26px;}
+  .donation-card-body h3{color:var(--parchment); font-size:19px; margin-bottom:10px;}
+  .donation-card-body p.desc{color:rgba(245,239,221,0.72); font-size:14.5px; margin-bottom:6px;}
+
+  /* Org grid */
+  .org-card{
+    padding:28px 22px; background:var(--parchment); border:1px solid var(--line); border-radius:8px;
+    text-align:center;
+  }
+  .org-card .org-icon{
+    width:54px; height:54px; margin:0 auto 16px; border-radius:50%;
+    background:var(--forest); display:flex; align-items:center; justify-content:center;
+  }
+  .org-card .org-icon svg{width:24px; height:24px;}
+  .org-card h4{font-size:16.5px; margin-bottom:8px;}
+  .org-card p{font-size:13.5px; color:var(--text-soft);}
+
+  /* Madrasa + Publication feature */
+  .feature-row{display:grid; grid-template-columns:1fr 1fr; gap:26px;}
+  .feature-card{
+    padding:34px; border-radius:10px; background:var(--parchment-deep); border:1px solid var(--line);
+  }
+  .feature-card h3{font-size:22px; margin-bottom:12px;}
+  .feature-card p{color:var(--text-soft); font-size:15px; margin-bottom:20px;}
+
+  /* Articles */
+  .article-list{display:flex; flex-direction:column;}
+  .article-row{
+    display:grid; grid-template-columns:120px 1fr auto; gap:24px; align-items:center;
+    padding:22px 0; border-bottom:1px solid var(--line);
+  }
+  .article-row:first-child{border-top:1px solid var(--line);}
+  .article-tag{
+    font-size:12.5px; font-weight:600; color:var(--maroon);
+    background:rgba(107,31,38,0.08); padding:6px 12px; border-radius:20px; text-align:center;
+  }
+  .article-row h4{font-size:17.5px; margin-bottom:6px;}
+  .article-row .author{font-size:13.5px; color:var(--text-soft);}
+  .article-row .arrow{font-size:20px; color:var(--brass);}
+
+  /* Team */
+  .team-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:24px;}
+  .team-card{text-align:center;}
+  .team-photo{
+    width:100%; aspect-ratio:1; border-radius:50% 50% 6px 6px / 60% 60% 0 0;
+    background:linear-gradient(160deg,var(--forest),var(--forest-dark));
+    display:flex; align-items:center; justify-content:center;
+    color:var(--brass-light); font-family:var(--font-display); font-size:32px; font-weight:600;
+    margin-bottom:16px;
+  }
+  .team-card h4{font-size:16px; margin-bottom:4px;}
+  .team-card .role{font-size:13px; color:var(--brass); font-weight:600;}
+  .team-card .more{font-size:13px; color:var(--text-soft); margin-top:8px; display:inline-block; border-bottom:1px solid var(--line);}
+
+  /* CTA band */
+  .cta-band{
+    background:var(--forest); color:var(--parchment); border-radius:14px;
+    padding:56px 60px; display:flex; justify-content:space-between; align-items:center; gap:30px; flex-wrap:wrap;
+  }
+  .cta-band h3{color:var(--parchment); font-size:26px; max-width:26ch;}
+  .cta-band p{color:rgba(245,239,221,0.75); margin-top:8px;}
+
+  /* Footer */
+  footer{background:var(--ink); color:rgba(245,239,221,0.7); padding:64px 0 28px; font-size:14px;}
+  .foot-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; padding-bottom:40px; border-bottom:1px solid rgba(255,255,255,0.08);}
+  .foot-grid h5{color:var(--parchment); font-family:var(--font-body); font-size:14px; letter-spacing:0.06em; margin-bottom:16px; text-transform:uppercase;}
+  .foot-grid a{display:block; margin-bottom:10px; color:rgba(245,239,221,0.65); transition:.2s;}
+  .foot-grid a:hover{color:var(--brass-light);}
+  .foot-bottom{display:flex; justify-content:space-between; padding-top:24px; flex-wrap:wrap; gap:12px;}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:980px){
+    .grid-3, .grid-4{grid-template-columns:repeat(2,1fr);}
+    .feature-row{grid-template-columns:1fr;}
+    .team-grid{grid-template-columns:repeat(2,1fr);}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    .hero .wrap{grid-template-columns:1fr;}
+    .arch-frame{order:-1; max-width:280px;}
+  }
+  @media (max-width:720px){
+    nav.links, .nav-cta .btn-outline{display:none;}
+    .menu-toggle{display:block;}
+    .grid-3, .grid-4, .team-grid{grid-template-columns:1fr 1fr;}
+    .article-row{grid-template-columns:70px 1fr; }
+    .article-row .arrow{display:none;}
+    .cta-band{flex-direction:column; align-items:flex-start; padding:40px 28px;}
+    .foot-grid{grid-template-columns:1fr;}
+  }
+
+  :focus-visible{outline:2.5px solid var(--brass); outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav wrap">
+    <a href="#top" class="brand">
+      <span class="brand-mark"></span>
+      <span class="brand-text">
+        <span class="name" style="display:block;">ছারছীনা মিডিয়া ফোরাম</span>
+        <span class="sub">ছারছীনা দরবার শরীফ</span>
+      </span>
+    </a>
+    <nav class="links">
+      <a href="#news">সংবাদ</a>
+      <a href="#donation">দান</a>
+      <a href="#orgs">সংগঠন</a>
+      <a href="#madrasa">মাদরাসা বোর্ড</a>
+      <a href="#articles">লেখনী</a>
+      <a href="#team">টিম</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#donation" class="btn btn-outline" style="border-color:rgba(245,239,221,0.4); color:var(--parchment);">দান করুন</a>
+    </div>
+    <button class="menu-toggle" aria-label="মেনু খুলুন"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span>🔔 আগামী মাহফিলের তারিখ ও স্থান শীঘ্রই ঘোষণা করা হবে — সবাইকে অংশগ্রহণের আহ্বান</span>
+    <span>📢 মসজিদ নির্মাণ কার্যক্রমে দান করে অংশীদার হোন</span>
+    <span>🔔 আগামী মাহফিলের তারিখ ও স্থান শীঘ্রই ঘোষণা করা হবে — সবাইকে অংশগ্রহণের আহ্বান</span>
+    <span>📢 মসজিদ নির্মাণ কার্যক্রমে দান করে অংশীদার হোন</span>
+  </div>
+</div>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">ছারছীনা দরবার শরীফ</span>
+      <h1>দরবার শরীফের কথা পৌঁছে যাক সবখানে</h1>
+      <p class="lede">মাহফিলের সংবাদ, উন্নয়নমূলক কার্যক্রম, সংগঠনসমূহের খবর ও ইসলামী লেখনী — একটি প্ল্যাটফর্মে। ছারছীনা মিডিয়া ফোরাম, দরবার শরীফের একমাত্র অনলাইন প্রচার মাধ্যম।</p>
+      <div class="hero-ctas">
+        <a href="#news" class="btn btn-primary">সর্বশেষ সংবাদ দেখুন</a>
+        <a href="#donation" class="btn btn-outline">দান করুন</a>
+      </div>
+    </div>
+    <div>
+      <div class="arch-frame">
+        <div class="arch-inner-line"></div>
+        <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <pattern id="jali" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="#C99A46" stroke-width="1" opacity="0.45"/>
+              <line x1="0" y1="12" x2="24" y2="12" stroke="#C99A46" stroke-width="1" opacity="0.45"/>
+            </pattern>
+          </defs>
+          <rect width="200" height="200" fill="url(#jali)"/>
+        </svg>
+        <svg class="arch-crescent" viewBox="0 0 64 64" fill="none">
+          <path d="M40 8 A22 22 0 1 0 40 56 A17 17 0 1 1 40 8 Z" fill="#C99A46"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="jali-divider"></div>
+
+<section id="news">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">সংবাদ</span>
+        <h2>হুজুরের মাহফিল ও সাম্প্রতিক সংবাদ</h2>
+      </div>
+      <p>প্রতিটি মাহফিল, ওয়াজ ও দরবার শরীফের কার্যক্রম নিয়মিত সংবাদ আকারে প্রকাশিত হয়।</p>
+    </div>
+    <div class="grid grid-3">
+      <article class="arch-card news-card">
+        <div class="arch-card-top">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 20V10L12 4L20 10V20H4Z" stroke="#F5EFDD" stroke-width="1.6"/><path d="M9 20V14H15V20" stroke="#F5EFDD" stroke-width="1.6"/></svg>
+        </div>
+        <div class="arch-card-body">
+          <span class="date">১০ জুলাই, ২০২৬</span>
+          <h3>বার্ষিক ওয়াজ মাহফিলের প্রস্তুতি সম্পন্ন</h3>
+          <p>দরবার শরীফ প্রাঙ্গণে অনুষ্ঠিতব্য বার্ষিক মাহফিল ঘিরে সার্বিক প্রস্তুতি নেওয়া হয়েছে।</p>
+          <a href="#" class="btn btn-outline" style="padding:8px 18px; font-size:13.5px;">বিস্তারিত পড়ুন</a>
+        </div>
+      </article>
+      <article class="arch-card news-card">
+        <div class="arch-card-top">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 20V10L12 4L20 10V20H4Z" stroke="#F5EFDD" stroke-width="1.6"/><path d="M9 20V14H15V20" stroke="#F5EFDD" stroke-width="1.6"/></svg>
+        </div>
+        <div class="arch-card-body">
+          <span class="date">৩ জুলাই, ২০২৬</span>
+          <h3>জেলা শাখার তত্ত্বাবধানে সাপ্তাহিক তালিম</h3>
+          <p>বিভিন্ন জেলা শাখায় নিয়মিত তালিম ও আলোচনা সভার আয়োজন করা হয়েছে।</p>
+          <a href="#" class="btn btn-outline" style="padding:8px 18px; font-size:13.5px;">বিস্তারিত পড়ুন</a>
+        </div>
+      </article>
+      <article class="arch-card news-card">
+        <div class="arch-card-top">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 20V10L12 4L20 10V20H4Z" stroke="#F5EFDD" stroke-width="1.6"/><path d="M9 20V14H15V20" stroke="#F5EFDD" stroke-width="1.6"/></svg>
+        </div>
+        <div class="arch-card-body">
+          <span class="date">২৮ জুন, ২০২৬</span>
+          <h3>নতুন শিক্ষাবর্ষের ভর্তি কার্যক্রম শুরু</h3>
+          <p>বাংলাদেশ দীনিয়া মাদরাসা বোর্ডের অধীন প্রতিষ্ঠানসমূহে ভর্তি প্রক্রিয়া চলছে।</p>
+          <a href="#" class="btn btn-outline" style="padding:8px 18px; font-size:13.5px;">বিস্তারিত পড়ুন</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark" id="donation">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">উন্নয়নমূলক কার্যক্রম</span>
+        <h2>আপনার দান বদলে দিতে পারে ভবিষ্যৎ</h2>
+      </div>
+      <p class="sub">দরবার শরীফের চলমান তিনটি প্রধান উন্নয়নমূলক প্রকল্পে সরাসরি দান করুন।</p>
+    </div>
+    <div class="grid grid-3">
+      <div class="donation-card">
+        <div class="arch-card-top">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 21V9L12 3L20 9V21H4Z" stroke="#12332A" stroke-width="1.6"/><rect x="10" y="14" width="4" height="7" stroke="#12332A" stroke-width="1.6"/></svg>
+        </div>
+        <div class="donation-card-body">
+          <h3>মসজিদ নির্মাণ</h3>
+          <p class="desc">প্রধান জামে মসজিদের সম্প্রসারণ কাজ চলমান রয়েছে।</p>
+          <div class="progress"><i style="width:62%"></i></div>
+          <div class="progress-label"><span>৬২% সম্পন্ন</span><span>লক্ষ্য: ২ কোটি টাকা</span></div>
+          <a href="#" class="btn btn-brass" style="width:100%; padding:11px;">দান করুন</a>
+        </div>
+      </div>
+      <div class="donation-card">
+        <div class="arch-card-top">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="18" stroke="#12332A" stroke-width="1.6"/><path d="M12 3L9 8H15L12 3Z" fill="#12332A"/></svg>
+        </div>
+        <div class="donation-card-body">
+          <h3>মিনার নির্মাণ</h3>
+          <p class="desc">দৃষ্টিনন্দন মিনার নির্মাণের কাজ দ্বিতীয় ধাপে রয়েছে।</p>
+          <div class="progress"><i style="width:38%"></i></div>
+          <div class="progress-label"><span>৩৮% সম্পন্ন</span><span>লক্ষ্য: ৮০ লক্ষ টাকা</span></div>
+          <a href="#" class="btn btn-brass" style="width:100%; padding:11px;">দান করুন</a>
+        </div>
+      </div>
+      <div class="donation-card">
+        <div class="arch-card-top">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 10L12 4L21 10" stroke="#12332A" stroke-width="1.6"/><rect x="5" y="10" width="14" height="10" stroke="#12332A" stroke-width="1.6"/></svg>
+        </div>
+        <div class="donation-card-body">
+          <h3>লিল্লাহ বোর্ডিং</h3>
+          <p class="desc">এতিম ও দুস্থ শিক্ষার্থীদের থাকা-খাওয়ার ব্যবস্থা পরিচালনায় সহায়তা করুন।</p>
+          <div class="progress"><i style="width:81%"></i></div>
+          <div class="progress-label"><span>৮১% সম্পন্ন</span><span>মাসিক ব্যয়: ৫ লক্ষ টাকা</span></div>
+          <a href="#" class="btn btn-brass" style="width:100%; padding:11px;">দান করুন</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="jali-divider"></div>
+
+<section id="orgs">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">সংগঠনসমূহ</span>
+        <h2>ছারছীনা দরবার শরীফের মাধ্যমে পরিচালিত সংগঠন</h2>
+      </div>
+    </div>
+    <div class="grid grid-4">
+      <div class="org-card">
+        <div class="org-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20V9L12 4L20 9V20H4Z" stroke="#F5EFDD" stroke-width="1.6"/></svg></div>
+        <h4>বাংলাদেশ জমিয়তে</h4>
+        <p>রাজনৈতিক ও সামাজিক দ্বীনি আন্দোলনের কেন্দ্রীয় সংগঠন।</p>
+      </div>
+      <div class="org-card">
+        <div class="org-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L4 8L12 13L20 8L12 3Z" stroke="#F5EFDD" stroke-width="1.6"/><path d="M6 11V16L12 20L18 16V11" stroke="#F5EFDD" stroke-width="1.6"/></svg></div>
+        <h4>ছাত্র সংগঠন</h4>
+        <p>শিক্ষার্থীদের মাঝে দ্বীনি ও নৈতিক শিক্ষা বিস্তারে কর্মরত।</p>
+      </div>
+      <div class="org-card">
+        <div class="org-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#F5EFDD" stroke-width="1.6"/><path d="M5 20C5 16 8 14 12 14C16 14 19 16 19 20" stroke="#F5EFDD" stroke-width="1.6"/></svg></div>
+        <h4>যুব সংগঠন</h4>
+        <p>তরুণ সমাজকে সংগঠিত করে সমাজসেবা ও দাওয়াতি কাজে যুক্ত রাখে।</p>
+      </div>
+      <div class="org-card">
+        <div class="org-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20V10L12 4L20 10V20H4Z" stroke="#F5EFDD" stroke-width="1.6"/><path d="M9 20V14H15V20" stroke="#F5EFDD" stroke-width="1.6"/></svg></div>
+        <h4>আইম্মায়ে হিযবুল্লাহ</h4>
+        <p>দেশের ইমাম-খতিবদের অধিকার ও মর্যাদা রক্ষায় গঠিত সংগঠন।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="madrasa" style="background:var(--parchment-deep); padding-top:70px; padding-bottom:70px;">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">শিক্ষা ও প্রকাশনা</span>
+        <h2>মাদরাসা বোর্ড ও প্রকাশনী</h2>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="feature-card">
+        <h3>বাংলাদেশ দীনিয়া মাদরাসা বোর্ড</h3>
+        <p>দেশজুড়ে দীনিয়া মাদরাসাসমূহের পাঠ্যক্রম, পরীক্ষা ও সনদ ব্যবস্থাপনার দায়িত্বে থাকা কেন্দ্রীয় বোর্ড।</p>
+        <a href="#" class="btn btn-outline">বোর্ড সম্পর্কে জানুন</a>
+      </div>
+      <div class="feature-card">
+        <h3>প্রকাশনী</h3>
+        <p>ইসলামী জ্ঞানচর্চা ও দরবার শরীফের ইতিহাস সংরক্ষণে নিয়মিত বই ও পত্রিকা প্রকাশ করে থাকে।</p>
+        <a href="#" class="btn btn-outline">প্রকাশনা দেখুন</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="articles">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">লেখনী</span>
+        <h2>লেখকদের কলমে ইসলামী চিন্তাধারা</h2>
+      </div>
+      <p>বিভিন্ন লেখক নিয়মিত ইসলামী বিষয়ে গবেষণাধর্মী ও শিক্ষামূলক লেখা প্রকাশ করেন।</p>
+    </div>
+    <div class="article-list">
+      <a href="#" class="article-row">
+        <span class="article-tag">আকীদা</span>
+        <span>
+          <h4>ঈমানের হাকীকত ও তার প্রভাব</h4>
+          <span class="author">লিখেছেন — মাওলানা আব্দুল করীম</span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+      <a href="#" class="article-row">
+        <span class="article-tag">তাসাউফ</span>
+        <span>
+          <h4>আত্মশুদ্ধির পথে দরবার শরীফের ভূমিকা</h4>
+          <span class="author">লিখেছেন — মুফতী নূরুল ইসলাম</span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+      <a href="#" class="article-row">
+        <span class="article-tag">সমসাময়িক</span>
+        <span>
+          <h4>আধুনিক যুগে দ্বীনি শিক্ষার গুরুত্ব</h4>
+          <span class="author">লিখেছেন — মাওলানা ইউসুফ আহমাদ</span>
+        </span>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="jali-divider"></div>
+
+<section id="team">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">মিডিয়া ফোরাম টিম</span>
+        <h2>যারা এই প্ল্যাটফর্ম পরিচালনা করছেন</h2>
+      </div>
+      <p>প্রতিটি সদস্যের জন্য থাকছে পৃথক পরিচিতি পাতা।</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-photo">র</div>
+        <h4>নাম থাকবে</h4>
+        <span class="role">সমন্বয়ক</span>
+        <a href="#" class="more">সম্পূর্ণ পরিচিতি →</a>
+      </div>
+      <div class="team-card">
+        <div class="team-photo">স</div>
+        <h4>নাম থাকবে</h4>
+        <span class="role">সংবাদ সম্পাদক</span>
+        <a href="#" class="more">সম্পূর্ণ পরিচিতি →</a>
+      </div>
+      <div class="team-card">
+        <div class="team-photo">ম</div>
+        <h4>নাম থাকবে</h4>
+        <span class="role">লেখক</span>
+        <a href="#" class="more">সম্পূর্ণ পরিচিতি →</a>
+      </div>
+      <div class="team-card">
+        <div class="team-photo">ক</div>
+        <h4>নাম থাকবে</h4>
+        <span class="role">কারিগরি সহায়ক</span>
+        <a href="#" class="more">সম্পূর্ণ পরিচিতি →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="cta-band">
+      <div>
+        <h3>দরবার শরীফের কার্যক্রমে সম্পৃক্ত থাকুন</h3>
+        <p>সর্বশেষ মাহফিল, দান কার্যক্রম ও লেখালেখির খবর সরাসরি জানতে যুক্ত থাকুন।</p>
+      </div>
+      <a href="#donation" class="btn btn-brass">এখনই দান করুন</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h5 style="font-family:var(--font-display); font-size:20px; text-transform:none;">ছারছীনা মিডিয়া ফোরাম</h5>
+        <p style="max-width:36ch; color:rgba(245,239,221,0.6);">ছারছীনা দরবার শরীফের একমাত্র অনলাইন প্রচার মাধ্যম।</p>
+      </div>
+      <div>
+        <h5>দ্রুত লিংক</h5>
+        <a href="#news">সংবাদ</a>
+        <a href="#donation">দান কার্যক্রম</a>
+        <a href="#orgs">সংগঠন</a>
+      </div>
+      <div>
+        <h5>প্রতিষ্ঠান</h5>
+        <a href="#madrasa">মাদরাসা বোর্ড</a>
+        <a href="#madrasa">প্রকাশনী</a>
+        <a href="#team">টিম পরিচিতি</a>
+      </div>
+      <div>
+        <h5>যোগাযোগ</h5>
+        <a href="#">ছারছীনা, পিরোজপুর</a>
+        <a href="#">ইমেইল ঠিকানা</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© ২০২৬ ছারছীনা মিডিয়া ফোরাম। সর্বস্বত্ব সংরক্ষিত।</span>
+      <span>ডিজাইন প্রোটোটাইপ — v1</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelector('.menu-toggle')?.addEventListener('click', function(){
+    const links = document.querySelector('nav.links');
+    const isOpen = links.style.display === 'flex';
+    links.style.display = isOpen ? 'none' : 'flex';
+    links.style.cssText += isOpen ? '' : 'position:absolute; top:100%; left:0; right:0; background:#12332A; flex-direction:column; padding:20px 28px; gap:16px;';
+  });
+</script>
+
+</body>
+</html>

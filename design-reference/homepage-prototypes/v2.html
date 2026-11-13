@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ছারছীনা মিডিয়া ফোরাম</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16231C;
+    --parchment:#F5EFDD;
+    --parchment-deep:#EBE1C4;
+    --forest:#1F4D3D;
+    --forest-dark:#12332A;
+    --brass:#A9762F;
+    --brass-light:#C99A46;
+    --maroon:#6B1F26;
+    --text:#1D2A22;
+    --text-soft:#4B5A50;
+    --line: rgba(22,35,28,0.12);
+    --font-display:'Noto Serif Bengali', serif;
+    --font-body:'Hind Siliguri', sans-serif;
+    --container: 1180px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0; background:var(--parchment); color:var(--text); font-family:var(--font-body); line-height:1.7; -webkit-font-smoothing:antialiased;}
+  h1,h2,h3,h4{font-family:var(--font-display); color:var(--ink); margin:0; line-height:1.3;}
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:var(--font-body);}
+  .wrap{max-width:var(--container); margin:0 auto; padding:0 28px;}
+  .eyebrow{display:inline-flex; align-items:center; gap:10px; font-size:14px; letter-spacing:0.14em; color:var(--maroon); font-weight:600; margin-bottom:14px;}
+  .eyebrow::before{content:""; width:22px; height:1.5px; background:var(--maroon); display:inline-block;}
+  .btn{display:inline-flex; align-items:center; justify-content:center; padding:14px 30px; border-radius:4px; font-weight:600; font-size:16px; cursor:pointer; border:1.5px solid transparent; transition:transform .18s ease, box-shadow .18s ease; white-space:nowrap;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--forest); color:var(--parchment);}
+  .btn-primary:hover{box-shadow:0 10px 24px rgba(31,77,61,0.28);}
+  .btn-outline{background:transparent; color:var(--ink); border-color:var(--ink);}
+  .btn-brass{background:var(--brass); color:var(--parchment);}
+  .btn-brass:hover{box-shadow:0 10px 24px rgba(169,118,47,0.32);}
+  .btn-sm{padding:9px 18px; font-size:13.5px;}
+
+  .jali-divider{
+    height:26px;
+    background-image: repeating-linear-gradient(45deg, transparent 0 11px, var(--brass) 11px 12.5px, transparent 12.5px 23px),
+                       repeating-linear-gradient(-45deg, transparent 0 11px, var(--brass) 11px 12.5px, transparent 12.5px 23px);
+    opacity:0.35;
+  }
+
+  /* ---------- Top utility bar ---------- */
+  .topbar{background:var(--ink); color:rgba(245,239,221,0.65); font-size:12.5px;}
+  .topbar .wrap{display:flex; justify-content:space-between; align-items:center; padding:7px 28px;}
+  .topbar .left, .topbar .right{display:flex; align-items:center; gap:18px;}
+  .topbar a{color:rgba(245,239,221,0.65); transition:.2s;}
+  .topbar a:hover{color:var(--brass-light);}
+  .topbar .social{display:flex; gap:12px;}
+  .topbar svg{width:14px; height:14px;}
+
+  /* ---------- Header ---------- */
+  header{position:sticky; top:0; z-index:50; background:var(--forest-dark); border-bottom:1px solid rgba(255,255,255,0.08);}
+  .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 28px; gap:20px;}
+  .brand{display:flex; align-items:center; gap:12px; color:var(--parchment);}
+  .brand-mark{width:38px; height:38px; background:var(--brass); clip-path: path('M19 0 C 30 0 38 10 38 22 L38 38 L0 38 L0 22 C0 10 8 0 19 0 Z'); flex-shrink:0;}
+  .brand-text .name{font-family:var(--font-display); font-size:18px; font-weight:600;}
+  .brand-text .sub{font-size:11.5px; color:var(--brass-light); letter-spacing:0.04em;}
+  nav.links{display:flex; gap:22px; align-items:center;}
+  nav.links a{color:rgba(245,239,221,0.85); font-size:14.5px; font-weight:500; padding:4px 0; border-bottom:2px solid transparent; transition:.2s;}
+  nav.links a:hover{color:var(--parchment); border-color:var(--brass-light);}
+  .nav-actions{display:flex; align-items:center; gap:14px;}
+  .icon-btn{background:none; border:none; color:rgba(245,239,221,0.8); cursor:pointer; padding:4px; display:flex;}
+  .icon-btn svg{width:19px; height:19px;}
+  .nav-actions .btn{padding:9px 20px; font-size:13.5px;}
+  .menu-toggle{display:none; background:none; border:none; cursor:pointer; padding:6px;}
+  .menu-toggle span{display:block; width:24px; height:2px; background:var(--parchment); margin:5px 0;}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:64px 0 0; position:relative; overflow:hidden;}
+  .hero .wrap{display:grid; grid-template-columns:1.05fr 0.9fr; gap:50px; align-items:center;}
+  .hero h1{font-size:clamp(32px, 4.6vw, 50px); font-weight:600; letter-spacing:-0.01em;}
+  .hero p.lede{margin-top:18px; font-size:17px; color:var(--text-soft); max-width:46ch;}
+  .hero-ctas{display:flex; gap:16px; margin-top:30px; flex-wrap:wrap;}
+
+  .photo-frame{
+    position:relative; width:100%; max-width:460px; margin:0 auto;
+    aspect-ratio:4/3.1; border-radius:14px; overflow:hidden;
+    background:linear-gradient(160deg, var(--forest), var(--forest-dark));
+    box-shadow:0 30px 60px -20px rgba(18,51,42,0.4);
+  }
+  .photo-frame .jali-fill{position:absolute; inset:0; opacity:0.5;}
+  .photo-frame .placeholder-note{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    color:rgba(245,239,221,0.85); text-align:center; padding:20px;
+  }
+  .photo-frame .placeholder-note svg{width:52px; height:52px; opacity:0.8;}
+  .photo-frame .placeholder-note span{font-size:13.5px; letter-spacing:0.03em;}
+
+  /* ---------- Quick donate widget ---------- */
+  .donate-widget-wrap{margin-top:-46px; position:relative; z-index:5;}
+  .donate-widget{
+    background:linear-gradient(135deg, var(--brass-light), var(--brass));
+    border-radius:14px; padding:30px 34px;
+    box-shadow:0 24px 50px -18px rgba(169,118,47,0.45);
+    position:relative; overflow:hidden;
+  }
+  .donate-widget::before{
+    content:""; position:absolute; inset:0;
+    background-image: repeating-linear-gradient(45deg, transparent 0 13px, rgba(255,255,255,0.12) 13px 14px, transparent 14px 27px);
+    pointer-events:none;
+  }
+  .donate-widget-head{position:relative; margin-bottom:20px;}
+  .donate-widget-head h3{color:var(--forest-dark); font-size:21px;}
+  .donate-widget-head p{color:rgba(22,35,28,0.65); font-size:13.5px; margin-top:4px;}
+  .donate-form{position:relative; display:grid; grid-template-columns:1fr 1.3fr 1fr auto; gap:14px; align-items:end;}
+  .donate-form label{display:block; font-size:12.5px; font-weight:600; color:var(--forest-dark); margin-bottom:6px;}
+  .donate-form select, .donate-form input{
+    width:100%; padding:12px 14px; border-radius:6px; border:1px solid rgba(22,35,28,0.15);
+    background:var(--parchment); font-family:var(--font-body); font-size:14.5px; color:var(--text);
+  }
+  .donate-form button{padding:12px 26px; height:47px;}
+  .donate-note{position:relative; font-size:12.5px; color:rgba(22,35,28,0.6); margin-top:14px;}
+
+  /* ---------- Ticker ---------- */
+  .ticker{background:var(--maroon); color:var(--parchment); overflow:hidden; white-space:nowrap; position:relative; margin-top:40px;}
+  .ticker-track{display:inline-flex; gap:60px; padding:12px 0; animation: scroll-left 26s linear infinite;}
+  .ticker span{font-size:14px; letter-spacing:0.02em;}
+  @keyframes scroll-left{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+  @media (prefers-reduced-motion: reduce){.ticker-track{animation:none;}}
+
+  /* ---------- Services strip ---------- */
+  .services{padding:56px 0 30px;}
+  .services-grid{display:grid; grid-template-columns:repeat(8,1fr); gap:14px;}
+  .service-item{
+    display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px;
+    padding:20px 10px; border-radius:10px; border:1px solid var(--line); background:var(--parchment);
+    transition:.2s;
+  }
+  .service-item:hover{border-color:var(--brass); transform:translateY(-3px);}
+  .service-item .ic{width:38px; height:38px; border-radius:50%; background:var(--forest); display:flex; align-items:center; justify-content:center;}
+  .service-item .ic svg{width:18px; height:18px;}
+  .service-item span{font-size:12.5px; font-weight:600; color:var(--text);}
+
+  section{padding:70px 0;}
+  .section-head{display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:40px; flex-wrap:wrap;}
+  .section-head h2{font-size:clamp(24px,3.2vw,32px); max-width:22ch;}
+  .section-head p{color:var(--text-soft); max-width:42ch; font-size:15px;}
+  .section-dark{background:var(--forest-dark); color:var(--parchment);}
+  .section-dark h2, .section-dark h3, .section-dark h4{color:var(--parchment);}
+  .section-dark .eyebrow{color:var(--brass-light);}
+  .section-dark .eyebrow::before{background:var(--brass-light);}
+  .section-dark p.sub{color:rgba(245,239,221,0.72);}
+  .section-alt{background:var(--parchment-deep);}
+
+  /* ---------- News + Mahfil countdown ---------- */
+  .news-mahfil{display:grid; grid-template-columns:1.6fr 1fr; gap:26px; align-items:start;}
+  .news-col{display:flex; flex-direction:column; gap:16px;}
+  .news-item{
+    display:grid; grid-template-columns:110px 1fr; gap:16px; padding:16px; border:1px solid var(--line);
+    border-radius:8px; background:var(--parchment); align-items:center;
+  }
+  .news-thumb{
+    aspect-ratio:1; border-radius:6px; background:linear-gradient(160deg,var(--forest),var(--forest-dark));
+    display:flex; align-items:center; justify-content:center;
+  }
+  .news-thumb svg{width:26px; height:26px;}
+  .news-item .date{font-size:12px; color:var(--brass); font-weight:600; display:block; margin-bottom:4px;}
+  .news-item h4{font-size:15.5px;}
+
+  .mahfil-card{
+    background:linear-gradient(165deg, var(--forest), var(--forest-dark)); color:var(--parchment);
+    border-radius:12px; padding:28px; text-align:center;
+  }
+  .mahfil-card .eyebrow{color:var(--brass-light);}
+  .mahfil-card .eyebrow::before{background:var(--brass-light);}
+  .mahfil-card h3{font-size:20px; margin:8px 0 20px;}
+  .countdown{display:flex; gap:8px; justify-content:center; margin-bottom:22px;}
+  .countdown .cd-box{background:rgba(245,239,221,0.1); border:1px solid rgba(245,239,221,0.18); border-radius:8px; padding:12px 8px; min-width:56px;}
+  .countdown .cd-box .num{font-family:var(--font-display); font-size:24px; font-weight:700; color:var(--brass-light); display:block;}
+  .countdown .cd-box .lbl{font-size:11px; color:rgba(245,239,221,0.7);}
+  .mahfil-card p{font-size:13.5px; color:rgba(245,239,221,0.75); margin-bottom:18px;}
+
+  /* ---------- Donation funds carousel ---------- */
+  .carousel-wrap{position:relative;}
+  .carousel{display:flex; gap:22px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:8px; scrollbar-width:none;}
+  .carousel::-webkit-scrollbar{display:none;}
+  .fund-card{
+    scroll-snap-align:start; flex:0 0 300px;
+    background:rgba(245,239,221,0.06); border:1px solid rgba(245,239,221,0.14);
+    border-radius:0 0 8px 8px; overflow:hidden;
+  }
+  .fund-card-top{
+    height:100px; margin:16px 16px 0; border-radius:50% 50% 0 0 / 65% 65% 0 0;
+    background:linear-gradient(160deg, var(--brass-light), var(--brass));
+    display:flex; align-items:center; justify-content:center;
+  }
+  .fund-card-top svg{width:32px; height:32px;}
+  .fund-card-body{padding:20px 22px 24px;}
+  .fund-card-body h3{color:var(--parchment); font-size:18px; margin-bottom:8px;}
+  .fund-card-body p{color:rgba(245,239,221,0.7); font-size:13.5px; margin-bottom:14px;}
+  .progress{height:8px; background:rgba(255,255,255,0.14); border-radius:6px; overflow:hidden; margin:10px 0 6px;}
+  .progress i{display:block; height:100%; background:var(--brass-light); border-radius:6px;}
+  .progress-label{display:flex; justify-content:space-between; font-size:12.5px; color:rgba(245,239,221,0.7); margin-bottom:16px;}
+  .carousel-controls{display:flex; gap:10px; justify-content:flex-end; margin-bottom:18px;}
+  .car-btn{width:38px; height:38px; border-radius:50%; border:1px solid rgba(245,239,221,0.3); background:transparent; color:var(--parchment); cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .car-btn:hover{background:rgba(245,239,221,0.1);}
+  .car-btn svg{width:16px; height:16px;}
+
+  /* ---------- Org grid ---------- */
+  .grid{display:grid; gap:26px;}
+  .grid-4{grid-template-columns:repeat(4,1fr);}
+  .org-card{padding:26px 20px; background:var(--parchment); border:1px solid var(--line); border-radius:8px; text-align:center;}
+  .org-card .org-icon{width:52px; height:52px; margin:0 auto 14px; border-radius:50%; background:var(--forest); display:flex; align-items:center; justify-content:center;}
+  .org-card .org-icon svg{width:23px; height:23px;}
+  .org-card h4{font-size:16px; margin-bottom:6px;}
+  .org-card p{font-size:13px; color:var(--text-soft);}
+
+  /* ---------- Team + gallery combined ---------- */
+  .team-gallery{display:grid; grid-template-columns:1.15fr 1fr; gap:26px;}
+  .panel{background:var(--parchment); border:1px solid var(--line); border-radius:10px; padding:26px;}
+  .panel-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;}
+  .panel-head h3{font-size:18px;}
+  .panel-head a{font-size:13px; color:var(--maroon); font-weight:600;}
+  .team-mini-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .team-mini{text-align:center;}
+  .team-mini .photo{
+    aspect-ratio:1; border-radius:50%; background:linear-gradient(160deg,var(--forest),var(--forest-dark));
+    display:flex; align-items:center; justify-content:center; color:var(--brass-light);
+    font-family:var(--font-display); font-size:20px; font-weight:600; margin-bottom:8px;
+  }
+  .team-mini span{font-size:12.5px; font-weight:600; display:block;}
+  .team-mini small{font-size:11px; color:var(--brass);}
+  .gallery-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+  .gallery-thumb{aspect-ratio:1; border-radius:6px; background:linear-gradient(150deg,var(--brass-light),var(--forest)); opacity:0.85;}
+
+  /* ---------- Get involved compact banner ---------- */
+  .involve-banner{
+    background:var(--maroon); color:var(--parchment); border-radius:14px; padding:40px 46px;
+    display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap;
+  }
+  .involve-banner h3{color:var(--parchment); font-size:22px; max-width:32ch;}
+  .involve-banner p{color:rgba(245,239,221,0.75); font-size:14px; margin-top:6px;}
+
+  /* ---------- Newsletter strip ---------- */
+  .newsletter-strip{
+    background:rgba(245,239,221,0.05); border-top:1px solid rgba(255,255,255,0.08); border-bottom:1px solid rgba(255,255,255,0.08);
+    padding:26px 0;
+  }
+  .newsletter-strip .wrap{display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;}
+  .newsletter-strip h4{color:var(--parchment); font-size:16px;}
+  .newsletter-form{display:flex; gap:10px;}
+  .newsletter-form input{padding:11px 16px; border-radius:6px; border:1px solid rgba(245,239,221,0.2); background:rgba(245,239,221,0.08); color:var(--parchment); font-family:var(--font-body); min-width:230px;}
+  .newsletter-form input::placeholder{color:rgba(245,239,221,0.5);}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--ink); color:rgba(245,239,221,0.7); padding:0 0 28px; font-size:14px;}
+  .foot-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; padding:48px 0 40px;}
+  .foot-grid h5{color:var(--parchment); font-family:var(--font-body); font-size:14px; letter-spacing:0.06em; margin-bottom:16px; text-transform:uppercase;}
+  .foot-grid a{display:block; margin-bottom:10px; color:rgba(245,239,221,0.65); transition:.2s;}
+  .foot-grid a:hover{color:var(--brass-light);}
+  .foot-bottom{display:flex; justify-content:space-between; padding-top:24px; border-top:1px solid rgba(255,255,255,0.08); flex-wrap:wrap; gap:12px;}
+
+  @media (max-width:980px){
+    .services-grid{grid-template-columns:repeat(4,1fr);}
+    .grid-4{grid-template-columns:repeat(2,1fr);}
+    .news-mahfil{grid-template-columns:1fr;}
+    .team-gallery{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+    .hero .wrap{grid-template-columns:1fr;}
+    .photo-frame{order:-1; max-width:340px;}
+    .donate-form{grid-template-columns:1fr 1fr; grid-template-rows:auto auto; }
+    .donate-form button{grid-column:span 2;}
+  }
+  @media (max-width:720px){
+    .topbar{display:none;}
+    nav.links{display:none;}
+    .menu-toggle{display:block;}
+    .services-grid{grid-template-columns:repeat(3,1fr);}
+    .grid-4{grid-template-columns:1fr 1fr;}
+    .team-mini-grid{grid-template-columns:repeat(2,1fr);}
+    .gallery-grid{grid-template-columns:repeat(3,1fr);}
+    .foot-grid{grid-template-columns:1fr;}
+    .involve-banner{flex-direction:column; align-items:flex-start;}
+    .donate-widget{padding:24px 20px;}
+    .newsletter-strip .wrap{flex-direction:column; align-items:flex-start;}
+  }
+  :focus-visible{outline:2.5px solid var(--brass); outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="left">
+      <a href="#">📍 ছারছীনা, পিরোজপুর</a>
+      <a href="#">✉️ info@sarsinamediaforum.org</a>
+    </div>
+    <div class="right">
+      <div class="social">
+        <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22V12h3l1-4h-4V6c0-1 .5-2 2-2h2V0h-3c-3 0-4.5 2-4.5 5v3H7v4h2.5v10h3.5z"/></svg></a>
+        <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 8s-.2-1.6-.8-2.3c-.8-.9-1.7-.9-2.1-1C16 4.5 12 4.5 12 4.5s-4 0-7 .2c-.5.1-1.4.1-2.2 1C2.2 6.4 2 8 2 8S1.8 10 1.8 12v1.9c0 2 .2 4 .2 4s.2 1.6.8 2.3c.8.9 1.9.9 2.4 1 1.7.2 7.2.2 7.2.2s4 0 7-.2c.5-.1 1.4-.1 2.2-1 .6-.7.8-2.3.8-2.3s.2-2 .2-4V12c0-2-.2-4-.2-4zM9.8 15V9l6 3-6 3z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-2.7 0-3 0-4 .1-1.1 0-1.8.2-2.5.5-.7.3-1.2.6-1.8 1.2-.6.6-.9 1.1-1.2 1.8-.3.7-.5 1.4-.5 2.5C2 9.1 2 9.4 2 12s0 3 .1 4c0 1.1.2 1.8.5 2.5.3.7.6 1.2 1.2 1.8.6.6 1.1.9 1.8 1.2.7.3 1.4.5 2.5.5 1 0 1.3.1 4 .1s3 0 4-.1c1.1 0 1.8-.2 2.5-.5.7-.3 1.2-.6 1.8-1.2.6-.6.9-1.1 1.2-1.8.3-.7.5-1.4.5-2.5 0-1 .1-1.3.1-4s0-3-.1-4c0-1.1-.2-1.8-.5-2.5-.3-.7-.6-1.2-1.2-1.8-.6-.6-1.1-.9-1.8-1.2-.7-.3-1.4-.5-2.5-.5-1 0-1.3-.1-4-.1zm0 3.6a6.4 6.4 0 110 12.8 6.4 6.4 0 010-12.8zm0 10.6a4.2 4.2 0 100-8.4 4.2 4.2 0 000 8.4zm6.6-10.8a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg></a>
+      </div>
+      <a href="#">লগইন</a>
+      <a href="#">রেজিস্টার</a>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="nav wrap">
+    <a href="#top" class="brand">
+      <span class="brand-mark"></span>
+      <span class="brand-text">
+        <span class="name" style="display:block;">ছারছীনা মিডিয়া ফোরাম</span>
+        <span class="sub">ছারছীনা দরবার শরীফ</span>
+      </span>
+    </a>
+    <nav class="links">
+      <a href="#news">সংবাদ</a>
+      <a href="#donation">দান</a>
+      <a href="#orgs">সংগঠন</a>
+      <a href="#madrasa">মাদরাসা বোর্ড</a>
+      <a href="#articles">লেখনী</a>
+      <a href="#team">টিম</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" aria-label="খুঁজুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button>
+      <button class="icon-btn" aria-label="একাউন্ট"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></svg></button>
+      <a href="#donation" class="btn btn-brass">দান করুন</a>
+    </div>
+    <button class="menu-toggle" aria-label="মেনু খুলুন"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">ছারছীনা দরবার শরীফ</span>
+      <h1>মানবতার কল্যাণে আমাদের অঙ্গীকার</h1>
+      <p class="lede">মাহফিলের সংবাদ, উন্নয়নমূলক কার্যক্রম, সংগঠনসমূহের খবর ও ইসলামী লেখনী — একটি প্ল্যাটফর্মে। ছারছীনা মিডিয়া ফোরাম, দরবার শরীফের একমাত্র অনলাইন প্রচার মাধ্যম।</p>
+      <div class="hero-ctas">
+        <a href="#donation" class="btn btn-primary">দান করুন</a>
+        <a href="#news" class="btn btn-outline">আমাদের সম্পর্কে</a>
+      </div>
+    </div>
+    <div>
+      <div class="photo-frame">
+        <svg class="jali-fill" viewBox="0 0 200 150" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <pattern id="jali2" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+              <line x1="12" y1="0" x2="12" y2="24" stroke="#C99A46" stroke-width="1" opacity="0.4"/>
+              <line x1="0" y1="12" x2="24" y2="12" stroke="#C99A46" stroke-width="1" opacity="0.4"/>
+            </pattern>
+          </defs>
+          <rect width="200" height="150" fill="url(#jali2)"/>
+        </svg>
+        <div class="placeholder-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.3"><rect x="3" y="5" width="18" height="14" rx="1.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5-5-4 4-3-3-6 6"/></svg>
+          <span>দরবার শরীফের প্রকৃত ছবি শীঘ্রই যুক্ত হবে</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap donate-widget-wrap">
+    <div class="donate-widget">
+      <div class="donate-widget-head">
+        <h3>আপনার দান প্রদান করুন</h3>
+        <p>নির্বাচিত তহবিলে সরাসরি ও নিরাপদে দান করুন — বিকাশ, নগদ ও কার্ডে পেমেন্ট গ্রহণযোগ্য</p>
+      </div>
+      <div class="donate-form">
+        <div>
+          <label>তহবিল</label>
+          <select>
+            <option>নির্বাচন করুন</option>
+            <option>মসজিদ নির্মাণ তহবিল</option>
+            <option>মিনার নির্মাণ তহবিল</option>
+            <option>লিল্লাহ বোর্ডিং তহবিল</option>
+            <option>সাধারণ দান / সাদাকাহ</option>
+          </select>
+        </div>
+        <div>
+          <label>মোবাইল / ইমেইল</label>
+          <input type="text" placeholder="মোবাইল নম্বর / ইমেইল লিখুন">
+        </div>
+        <div>
+          <label>পরিমাণ</label>
+          <input type="text" placeholder="৳ সংখ্যায় লিখুন">
+        </div>
+        <button class="btn btn-primary">দান করুন</button>
+      </div>
+      <p class="donate-note">প্রতিটি দানের বিপরীতে রশিদ প্রদান করা হয় — বিস্তারিত জানতে ক্লিক করুন।</p>
+    </div>
+  </div>
+</section>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span>🔔 আগামী মাহফিলের তারিখ ও স্থান শীঘ্রই ঘোষণা করা হবে — সবাইকে অংশগ্রহণের আহ্বান</span>
+    <span>📢 মসজিদ নির্মাণ কার্যক্রমে দান করে অংশীদার হোন</span>
+    <span>🔔 আগামী মাহফিলের তারিখ ও স্থান শীঘ্রই ঘোষণা করা হবে — সবাইকে অংশগ্রহণের আহ্বান</span>
+    <span>📢 মসজিদ নির্মাণ কার্যক্রমে দান করে অংশীদার হোন</span>
+  </div>
+</div>
+
+<section class="services">
+  <div class="wrap">
+    <div class="services-grid">
+      <a class="service-item" href="#donation">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.8"><path d="M12 21s-7-4.4-9.5-9C1 8.6 2.6 5 6 5c2 0 3.5 1.2 4.2 2.6C10.9 6.2 12.4 5 14.4 5c3.4 0 5 3.6 3.5 7-2.5 4.6-9.5 9-9.5 9z"/></svg></span>
+        <span>দান করুন</span>
+      </a>
+      <a class="service-item" href="#news">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.8"><path d="M4 19V6a1 1 0 011-1h11l4 4v10a1 1 0 01-1 1H5a1 1 0 01-1-1z"/><path d="M8 9h7M8 13h7M8 17h4"/></svg></span>
+        <span>সর্বশেষ সংবাদ</span>
+      </a>
+      <a class="service-item" href="#news">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="1.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+        <span>মাহফিল সূচি</span>
+      </a>
+      <a class="service-item" href="#">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg></span>
+        <span>ইসলামিক প্রশ্ন</span>
+      </a>
+      <a class="service-item" href="#madrasa">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.8"><path d="M2 8l10-5 10 5-10 5-10-5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></span>
+        <span>শিক্ষা প্রতিষ্ঠান</span>
+      </a>
+      <a class="service-item" href="#madrasa">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg></span>
+        <span>প্রকাশনী</span>
+      </a>
+      <a class="service-item" href="#orgs">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.8"><circle cx="8" cy="9" r="2.6"/><circle cx="16" cy="9" r="2.6"/><path d="M3 19c0-2.8 2.2-5 5-5M21 19c0-2.8-2.2-5-5-5"/></svg></span>
+        <span>সংগঠনসমূহ</span>
+      </a>
+      <a class="service-item" href="#team">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+        <span>মিডিয়া গ্যালারি</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="jali-divider"></div>
+
+<section id="news">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">সংবাদ ও মাহফিল</span>
+        <h2>হুজুরের মাহফিল ও সাম্প্রতিক সংবাদ</h2>
+      </div>
+      <p>প্রতিটি মাহফিল, ওয়াজ ও দরবার শরীফের কার্যক্রম নিয়মিত সংবাদ আকারে প্রকাশিত হয়।</p>
+    </div>
+    <div class="news-mahfil">
+      <div class="news-col">
+        <div class="news-item">
+          <div class="news-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.6"><path d="M4 20V10L12 4L20 10V20H4Z"/><path d="M9 20V14H15V20"/></svg></div>
+          <div>
+            <span class="date">১০ জুলাই, ২০২৬</span>
+            <h4>বার্ষিক ওয়াজ মাহফিলের প্রস্তুতি সম্পন্ন</h4>
+          </div>
+        </div>
+        <div class="news-item">
+          <div class="news-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.6"><path d="M4 20V10L12 4L20 10V20H4Z"/><path d="M9 20V14H15V20"/></svg></div>
+          <div>
+            <span class="date">৩ জুলাই, ২০২৬</span>
+            <h4>জেলা শাখার তত্ত্বাবধানে সাপ্তাহিক তালিম</h4>
+          </div>
+        </div>
+        <div class="news-item">
+          <div class="news-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="#F5EFDD" stroke-width="1.6"><path d="M4 20V10L12 4L20 10V20H4Z"/><path d="M9 20V14H15V20"/></svg></div>
+          <div>
+            <span class="date">২৮ জুন, ২০২৬</span>
+            <h4>নতুন শিক্ষাবর্ষের ভর্তি কার্যক্রম শুরু</h4>
+          </div>
+        </div>
+        <a href="#" class="btn btn-outline" style="align-self:flex-start;">সব সংবাদ দেখুন</a>
+      </div>
+      <div class="mahfil-card">
+        <span class="eyebrow">আসন্ন মাহফিল</span>
+        <h3>বার্ষিক রাহমানী মাহফিল ২০২৬</h3>
+        <div class="countdown" id="countdown">
+          <div class="cd-box"><span class="num" id="cd-days">--</span><span class="lbl">দিন</span></div>
+          <div class="cd-box"><span class="num" id="cd-hours">--</span><span class="lbl">ঘণ্টা</span></div>
+          <div class="cd-box"><span class="num" id="cd-mins">--</span><span class="lbl">মিনিট</span></div>
+          <div class="cd-box"><span class="num" id="cd-secs">--</span><span class="lbl">সেকেন্ড</span></div>
+        </div>
+        <p>ছারছীনা দরবার শরীফ প্রাঙ্গণ, পিরোজপুর</p>
+        <a href="#" class="btn btn-brass" style="width:100%;">বিস্তারিত দেখুন</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark" id="donation">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">দান তহবিলসমূহ</span>
+        <h2>চলুন একসাথে পরিবর্তন আনি</h2>
+      </div>
+      <p class="sub">দরবার শরীফের চলমান উন্নয়নমূলক প্রকল্পে সরাসরি দান করুন।</p>
+    </div>
+    <div class="carousel-controls">
+      <button class="car-btn" id="car-prev" aria-label="আগেরটি"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button class="car-btn" id="car-next" aria-label="পরেরটি"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+    <div class="carousel-wrap">
+      <div class="carousel" id="fund-carousel">
+        <div class="fund-card">
+          <div class="fund-card-top"><svg viewBox="0 0 24 24" fill="none"><path d="M4 21V9L12 3L20 9V21H4Z" stroke="#12332A" stroke-width="1.6"/><rect x="10" y="14" width="4" height="7" stroke="#12332A" stroke-width="1.6"/></svg></div>
+          <div class="fund-card-body">
+            <h3>মসজিদ নির্মাণ তহবিল</h3>
+            <p>প্রধান জামে মসজিদের সম্প্রসারণ কাজ চলমান রয়েছে।</p>
+            <div class="progress"><i style="width:62%"></i></div>
+            <div class="progress-label"><span>৬২% সম্পন্ন</span><span>লক্ষ্য: ২ কোটি টাকা</span></div>
+            <a href="#" class="btn btn-brass" style="width:100%; padding:11px;">দান করুন</a>
+          </div>
+        </div>
+        <div class="fund-card">
+          <div class="fund-card-top"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="3" width="6" height="18" stroke="#12332A" stroke-width="1.6"/><path d="M12 3L9 8H15L12 3Z" fill="#12332A"/></svg></div>
+          <div class="fund-card-body">
+            <h3>মিনার নির্মাণ তহবিল</h3>
+            <p>দৃষ্টিনন্দন মিনার নির্মাণের কাজ দ্বিতীয় ধাপে রয়েছে।</p>
+            <div class="progress"><i style="width:38%"></i></div>
+            <div class="progress-label"><span>৩৮% সম্পন্ন</span><span>লক্ষ্য: ৮০ লক্ষ টাকা</span></div>
+            <a href="#" class="btn btn-brass" style="width:100%; padding:11px;">দান করুন</a>
+          </div>
+        </div>
+        <div class="fund-card">
+          <div class="fund-card-top"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10L12 4L21 10" stroke="#12332A" stroke-width="1.6"/><rect x="5" y="10" width="14" height="10" stroke="#12332A" stroke-width="1.6"/></svg></div>
+          <div class="fund-card-body">
+            <h3>লিল্লাহ বোর্ডিং তহবিল</h3>
+            <p>এতিম ও দুস্থ শিক্ষার্থীদের থাকা-খাওয়ার ব্যবস্থা পরিচালনায় সহায়তা করুন।</p>
+            <div class="progress"><i style="width:81%"></i></div>
+            <div class="progress-label"><span>৮১% সম্পন্ন</span><span>মাসিক ব্যয়: ৫ লক্ষ টাকা</span></div>
+            <a href="#" class="btn btn-brass" style="width:100%; padding:11px;">দান করুন</a>
+          </div>
+        </div>
+        <div class="fund-card">
+          <div class="fund-card-top"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.4-9.5-9C1 8.6 2.6 5 6 5c2 0 3.5 1.2 4.2 2.6C10.9 6.2 12.4 5 14.4 5c3.4 0 5 3.6 3.5 7-2.5 4.6-9.5 9-9.5 9z" stroke="#12332A" stroke-width="1.6"/></svg></div>
+          <div class="fund-card-body">
+            <h3>সাধারণ দান / সাদাকাহ</h3>
+            <p>দরবার শরীফের নিয়মিত পরিচালন ব্যয় ও জরুরি প্রয়োজনে ব্যয় হয়।</p>
+            <div class="progress"><i style="width:100%"></i></div>
+            <div class="progress-label"><span>চলমান তহবিল</span><span>যেকোনো পরিমাণ</span></div>
+            <a href="#" class="btn btn-brass" style="width:100%; padding:11px;">দান করুন</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="jali-divider"></div>
+
+<section id="orgs">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">সংগঠনসমূহ</span>
+        <h2>ছারছীনা দরবার শরীফের মাধ্যমে পরিচালিত সংগঠন</h2>
+      </div>
+    </div>
+    <div class="grid grid-4">
+      <div class="org-card">
+        <div class="org-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20V9L12 4L20 9V20H4Z" stroke="#F5EFDD" stroke-width="1.6"/></svg></div>
+        <h4>বাংলাদেশ জমিয়তে</h4>
+        <p>রাজনৈতিক ও সামাজিক দ্বীনি আন্দোলনের কেন্দ্রীয় সংগঠন।</p>
+      </div>
+      <div class="org-card">
+        <div class="org-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L4 8L12 13L20 8L12 3Z" stroke="#F5EFDD" stroke-width="1.6"/><path d="M6 11V16L12 20L18 16V11" stroke="#F5EFDD" stroke-width="1.6"/></svg></div>
+        <h4>ছাত্র সংগঠন</h4>
+        <p>শিক্ষার্থীদের মাঝে দ্বীনি ও নৈতিক শিক্ষা বিস্তারে কর্মরত।</p>
+      </div>
+      <div class="org-card">
+        <div class="org-icon"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="#F5EFDD" stroke-width="1.6"/><path d="M5 20C5 16 8 14 12 14C16 14 19 16 19 20" stroke="#F5EFDD" stroke-width="1.6"/></svg></div>
+        <h4>যুব সংগঠন</h4>
+        <p>তরুণ সমাজকে সংগঠিত করে সমাজসেবা ও দাওয়াতি কাজে যুক্ত রাখে।</p>
+      </div>
+      <div class="org-card">
+        <div class="org-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20V10L12 4L20 10V20H4Z" stroke="#F5EFDD" stroke-width="1.6"/><path d="M9 20V14H15V20" stroke="#F5EFDD" stroke-width="1.6"/></svg></div>
+        <h4>আইম্মায়ে হিযবুল্লাহ</h4>
+        <p>দেশের ইমাম-খতিবদের অধিকার ও মর্যাদা রক্ষায় গঠিত সংগঠন।</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="madrasa" class="section-alt">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">শিক্ষা ও প্রকাশনা</span>
+        <h2>মাদরাসা বোর্ড ও প্রকাশনী</h2>
+      </div>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr 1fr;">
+      <div class="panel">
+        <h3 style="font-size:20px; margin-bottom:12px;">বাংলাদেশ দীনিয়া মাদরাসা বোর্ড</h3>
+        <p style="color:var(--text-soft); font-size:14.5px; margin-bottom:18px;">দেশজুড়ে দীনিয়া মাদরাসাসমূহের পাঠ্যক্রম, পরীক্ষা ও সনদ ব্যবস্থাপনার দায়িত্বে থাকা কেন্দ্রীয় বোর্ড।</p>
+        <a href="#" class="btn btn-outline">বোর্ড সম্পর্কে জানুন</a>
+      </div>
+      <div class="panel">
+        <h3 style="font-size:20px; margin-bottom:12px;">প্রকাশনী</h3>
+        <p style="color:var(--text-soft); font-size:14.5px; margin-bottom:18px;">ইসলামী জ্ঞানচর্চা ও দরবার শরীফের ইতিহাস সংরক্ষণে নিয়মিত বই ও পত্রিকা প্রকাশ করে থাকে।</p>
+        <a href="#" class="btn btn-outline">প্রকাশনা দেখুন</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="articles">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">লেখনী</span>
+        <h2>লেখকদের কলমে ইসলামী চিন্তাধারা</h2>
+      </div>
+      <p>বিভিন্ন লেখক নিয়মিত ইসলামী বিষয়ে গবেষণাধর্মী ও শিক্ষামূলক লেখা প্রকাশ করেন।</p>
+    </div>
+    <div style="display:flex; flex-direction:column;">
+      <a href="#" style="display:grid; grid-template-columns:100px 1fr auto; gap:20px; align-items:center; padding:18px 0; border-top:1px solid var(--line);">
+        <span style="font-size:12.5px; font-weight:600; color:var(--maroon); background:rgba(107,31,38,0.08); padding:6px 12px; border-radius:20px; text-align:center;">আকীদা</span>
+        <span><h4 style="font-size:17px; margin-bottom:4px;">ঈমানের হাকীকত ও তার প্রভাব</h4><span style="font-size:13px; color:var(--text-soft);">লিখেছেন — মাওলানা আব্দুল করীম</span></span>
+        <span style="font-size:20px; color:var(--brass);">→</span>
+      </a>
+      <a href="#" style="display:grid; grid-template-columns:100px 1fr auto; gap:20px; align-items:center; padding:18px 0; border-top:1px solid var(--line);">
+        <span style="font-size:12.5px; font-weight:600; color:var(--maroon); background:rgba(107,31,38,0.08); padding:6px 12px; border-radius:20px; text-align:center;">তাসাউফ</span>
+        <span><h4 style="font-size:17px; margin-bottom:4px;">আত্মশুদ্ধির পথে দরবার শরীফের ভূমিকা</h4><span style="font-size:13px; color:var(--text-soft);">লিখেছেন — মুফতী নূরুল ইসলাম</span></span>
+        <span style="font-size:20px; color:var(--brass);">→</span>
+      </a>
+      <a href="#" style="display:grid; grid-template-columns:100px 1fr auto; gap:20px; align-items:center; padding:18px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);">
+        <span style="font-size:12.5px; font-weight:600; color:var(--maroon); background:rgba(107,31,38,0.08); padding:6px 12px; border-radius:20px; text-align:center;">সমসাময়িক</span>
+        <span><h4 style="font-size:17px; margin-bottom:4px;">আধুনিক যুগে দ্বীনি শিক্ষার গুরুত্ব</h4><span style="font-size:13px; color:var(--text-soft);">লিখেছেন — মাওলানা ইউসুফ আহমাদ</span></span>
+        <span style="font-size:20px; color:var(--brass);">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="jali-divider"></div>
+
+<section id="team">
+  <div class="wrap">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">মিডিয়া ফোরাম</span>
+        <h2>টিম ও মিডিয়া গ্যালারি</h2>
+      </div>
+    </div>
+    <div class="team-gallery">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>মিডিয়া ফোরাম টিম</h3>
+          <a href="#">সবাইকে দেখুন →</a>
+        </div>
+        <div class="team-mini-grid">
+          <div class="team-mini"><div class="photo">র</div><span>নাম থাকবে</span><small>সমন্বয়ক</small></div>
+          <div class="team-mini"><div class="photo">স</div><span>নাম থাকবে</span><small>সংবাদ সম্পাদক</small></div>
+          <div class="team-mini"><div class="photo">ম</div><span>নাম থাকবে</span><small>লেখক</small></div>
+          <div class="team-mini"><div class="photo">ক</div><span>নাম থাকবে</span><small>কারিগরি সহায়ক</small></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>মিডিয়া গ্যালারি</h3>
+          <a href="#">সব ছবি →</a>
+        </div>
+        <div class="gallery-grid">
+          <div class="gallery-thumb"></div>
+          <div class="gallery-thumb"></div>
+          <div class="gallery-thumb"></div>
+          <div class="gallery-thumb"></div>
+          <div class="gallery-thumb"></div>
+          <div class="gallery-thumb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="involve-banner">
+      <div>
+        <h3>আমাদের সাথে যুক্ত হোন</h3>
+        <p>নিয়মিত দাতা, আজীবন সদস্য, স্বেচ্ছাসেবক বা ক্যারিয়ার — যেভাবে ইচ্ছা যুক্ত হয়ে সেবায় ভূমিকা রাখুন।</p>
+      </div>
+      <a href="#" class="btn btn-brass">বিস্তারিত জানুন →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="newsletter-strip">
+    <div class="wrap">
+      <h4>নিউজলেটার সাবস্ক্রাইব করুন — নিয়মিত আপডেট পেতে যুক্ত থাকুন</h4>
+      <div class="newsletter-form">
+        <input type="text" placeholder="আপনার ইমেইল লিখুন">
+        <button class="btn btn-brass btn-sm">সাবস্ক্রাইব</button>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h5 style="font-family:var(--font-display); font-size:20px; text-transform:none;">ছারছীনা মিডিয়া ফোরাম</h5>
+        <p style="max-width:36ch; color:rgba(245,239,221,0.6);">ছারছীনা দরবার শরীফের একমাত্র অনলাইন প্রচার মাধ্যম।</p>
+      </div>
+      <div>
+        <h5>দ্রুত লিংক</h5>
+        <a href="#news">সংবাদ</a>
+        <a href="#donation">দান কার্যক্রম</a>
+        <a href="#orgs">সংগঠন</a>
+      </div>
+      <div>
+        <h5>প্রতিষ্ঠান</h5>
+        <a href="#madrasa">মাদরাসা বোর্ড</a>
+        <a href="#madrasa">প্রকাশনী</a>
+        <a href="#team">টিম পরিচিতি</a>
+      </div>
+      <div>
+        <h5>যোগাযোগ</h5>
+        <a href="#">ছারছীনা, পিরোজপুর</a>
+        <a href="#">ইমেইল ঠিকানা</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© ২০২৬ ছারছীনা মিডিয়া ফোরাম। সর্বস্বত্ব সংরক্ষিত।</span>
+      <span>ডিজাইন প্রোটোটাইপ — v2</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelector('.menu-toggle')?.addEventListener('click', function(){
+    const links = document.querySelector('nav.links');
+    const isOpen = links.style.display === 'flex';
+    links.style.display = isOpen ? 'none' : 'flex';
+    links.style.cssText += isOpen ? '' : 'position:absolute; top:100%; left:0; right:0; background:#12332A; flex-direction:column; padding:20px 28px; gap:16px;';
+  });
+
+  // Countdown timer
+  (function(){
+    const target = new Date('2026-08-15T09:00:00');
+    const d = document.getElementById('cd-days');
+    const h = document.getElementById('cd-hours');
+    const m = document.getElementById('cd-mins');
+    const s = document.getElementById('cd-secs');
+    function tick(){
+      const now = new Date();
+      let diff = Math.max(0, target - now);
+      const days = Math.floor(diff / (1000*60*60*24));
+      diff -= days*(1000*60*60*24);
+      const hours = Math.floor(diff / (1000*60*60));
+      diff -= hours*(1000*60*60);
+      const mins = Math.floor(diff / (1000*60));
+      diff -= mins*(1000*60);
+      const secs = Math.floor(diff / 1000);
+      d.textContent = String(days).padStart(2,'0');
+      h.textContent = String(hours).padStart(2,'0');
+      m.textContent = String(mins).padStart(2,'0');
+      s.textContent = String(secs).padStart(2,'0');
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+
+  // Fund carousel controls
+  (function(){
+    const track = document.getElementById('fund-carousel');
+    const prev = document.getElementById('car-prev');
+    const next = document.getElementById('car-next');
+    const scrollAmt = 322;
+    prev?.addEventListener('click', ()=> track.scrollBy({left:-scrollAmt, behavior:'smooth'}));
+    next?.addEventListener('click', ()=> track.scrollBy({left:scrollAmt, behavior:'smooth'}));
+  })();
+</script>
+
+</body>
+</html>
