@@ -1,0 +1,442 @@
+// Sarsina Media Forum — Prisma schema
+// Dev uses SQLite (file-based, no server needed). Production switches to MySQL
+// by changing `provider` + `DATABASE_URL` only — models are written to be
+// portable between both (no `enum` type, since SQLite does not support it;
+// allowed values are documented in comments and enforced with zod at the API layer).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// AUTH & ACCESS CONTROL
+// Two separate identity systems, per project decision:
+//   - User       = CMS staff (News Editor, Mahfil Manager, ...), needs Super Admin approval
+//   - Member     = public visitor/donor account, self-serve signup, no approval needed
+// ============================================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  passwordHash  String
+  avatarUrl     String?
+  isApproved    Boolean   @default(false) // Super Admin must approve staff accounts
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  roles         UserRole[]
+  newsAuthored  News[]        @relation("NewsAuthor")
+  articlesWritten Article[]   @relation("ArticleAuthor")
+  auditLogs     AuditLog[]
+
+  @@index([email])
+}
+
+// Role name is one of: super_admin, news_editor, mahfil_manager, donation_manager,
+// education_manager, organization_manager, publication_manager, media_manager,
+// team_manager, writer, reviewer
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  label       String   // Bengali display label, e.g. "সংবাদ সম্পাদক"
+  description String?
+  createdAt   DateTime @default(now())
+
+  users       UserRole[]
+  permissions RolePermission[]
+}
+
+// Permission action is one of: view, create, edit, delete, publish, approve, export, restore
+// Permission module is one of: news, mahfil, donation, education, organization,
+// publication, article, media, team, member, settings, roles
+model Permission {
+  id     String @id @default(cuid())
+  module String
+  action String
+  roles  RolePermission[]
+
+  @@unique([module, action])
+}
+
+model UserRole {
+  userId String
+  roleId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+}
+
+// Public visitor / donor account — instant signup, no approval required
+model Member {
+  id           String    @id @default(cuid())
+  name         String
+  email        String?   @unique
+  phone        String?   @unique
+  passwordHash String
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+
+  comments     Comment[]
+  reactions    Reaction[]
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String   // e.g. "news.publish", "donation.update"
+  entity    String?
+  entityId  String?
+  detail    String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+// ============================================================
+// NEWS
+// ============================================================
+
+// status is one of: draft, pending_review, published
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  body        String
+  category    String   // e.g. "মাহফিল সংবাদ", "অফিসিয়াল ঘোষণা", "সামাজিক কার্যক্রম"
+  coverImage  String?
+  videoUrl    String?
+  status      String   @default("draft")
+  publishedAt DateTime?
+  seoTitle    String?
+  seoDescription String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  authorId    String
+  author      User      @relation("NewsAuthor", fields: [authorId], references: [id])
+  mahfilId    String?
+  mahfil      Mahfil?   @relation(fields: [mahfilId], references: [id])
+  comments    Comment[]
+  reactions   Reaction[]
+
+  @@index([status, publishedAt])
+  @@index([category])
+}
+
+// Generic comment, usable on News and Article via polymorphic-style fields
+model Comment {
+  id         String   @id @default(cuid())
+  body       String
+  status     String   @default("pending") // pending, approved, rejected — moderation queue
+  memberId   String
+  member     Member   @relation(fields: [memberId], references: [id])
+  newsId     String?
+  news       News?    @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  articleId  String?
+  article    Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@index([status])
+}
+
+// type is one of: like, heart, dua (🤲)
+model Reaction {
+  id        String   @id @default(cuid())
+  type      String
+  memberId  String
+  member    Member   @relation(fields: [memberId], references: [id])
+  newsId    String?
+  news      News?    @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([memberId, newsId, type])
+}
+
+// ============================================================
+// MAHFIL
+// ============================================================
+
+// kind is one of: annual, daily, special
+// status is one of: upcoming, ongoing, past
+model Mahfil {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  kind          String    @default("annual")
+  status        String    @default("upcoming")
+  bannerImage   String?
+  description   String?
+  venue         String?
+  startDateBn   String?   // Bengali calendar date, display string
+  startDateEn   DateTime
+  startDateHijri String?  // Hijri date — stored as entered by admin, not auto-converted
+  endDate       DateTime?
+  time          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  relatedNews   News[]
+
+  @@index([status, startDateEn])
+}
+
+// ============================================================
+// DONATION
+// ============================================================
+
+// status is one of: active, completed, paused
+model DonationProject {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  description     String
+  image           String?
+  requiredAmount  Float
+  collectedAmount Float    @default(0)
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  donations       Donation[]
+}
+
+// Manual record for now (no payment gateway integration in v1).
+// method is one of: cash, bkash, nagad, bank, other
+model Donation {
+  id         String   @id @default(cuid())
+  projectId  String
+  project    DonationProject @relation(fields: [projectId], references: [id])
+  donorName  String?
+  amount     Float
+  method     String   @default("cash")
+  note       String?
+  recordedBy String?  // userId of the Donation Manager who logged it
+  createdAt  DateTime @default(now())
+}
+
+// ============================================================
+// ORGANIZATIONS
+// ============================================================
+
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  logo        String?
+  summary     String
+  history     String?
+  goals       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  committeeMembers OrganizationCommitteeMember[]
+}
+
+model OrganizationCommitteeMember {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name           String
+  designation    String
+  photo          String?
+  district       String?  // for future district committee rollout
+  order          Int      @default(0)
+}
+
+// ============================================================
+// EDUCATION
+// ============================================================
+
+// EducationPage covers the three mega-module entries:
+// slug one of: kamil-madrasa, alia-division, deenia-madrasa-board
+model EducationPage {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  summary     String
+  body        String?
+  coverImage  String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Teacher {
+  id             String  @id @default(cuid())
+  name           String
+  designation    String
+  photo          String?
+  educationPageSlug String // "kamil-madrasa" | "alia-division"
+  order          Int     @default(0)
+}
+
+model Notice {
+  id             String   @id @default(cuid())
+  title          String
+  fileUrl        String?
+  educationPageSlug String?
+  publishedAt    DateTime @default(now())
+}
+
+// Registered Madrasa Directory — nationwide listing under the Board
+model RegisteredMadrasa {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  photo          String?
+  founder        String?
+  director       String?
+  address        String
+  division       String
+  district       String
+  upazila        String
+  latitude       Float?
+  longitude      Float?
+  establishedYear Int?
+  phone          String?
+  createdAt      DateTime @default(now())
+
+  @@index([division, district, upazila])
+}
+
+// ============================================================
+// PUBLICATIONS (BOOKS)
+// ============================================================
+
+model Book {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  coverImage  String?
+  authorName  String
+  publisher   String?
+  description String?
+  price       Float?
+  isNew       Boolean  @default(false)
+  isPopular   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+// ============================================================
+// ISLAMIC ARTICLES / BLOG
+// ============================================================
+
+model Author {
+  id                 String   @id @default(cuid())
+  name               String
+  slug               String   @unique
+  photo              String?
+  designation        String?
+  bio                String?
+  qualifications     String?
+  researchInterests  String?
+
+  articles           Article[]
+}
+
+// category is one of: aqida, fiqh, tasawwuf, history, contemporary
+// status is one of: draft, published
+model Article {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  excerpt       String?
+  body          String
+  category      String
+  coverImage    String?
+  status        String   @default("draft")
+  readingTimeMin Int?
+  publishedAt   DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  authorProfileId String
+  authorProfile   Author @relation(fields: [authorProfileId], references: [id])
+  writtenByUserId String
+  writtenByUser   User   @relation("ArticleAuthor", fields: [writtenByUserId], references: [id])
+  comments        Comment[]
+
+  @@index([status, publishedAt])
+  @@index([category])
+}
+
+// ============================================================
+// MEDIA FORUM TEAM
+// ============================================================
+
+// group is one of: leadership, content, technology
+model TeamMember {
+  id          String  @id @default(cuid())
+  name        String
+  designation String
+  group       String
+  photo       String?
+  bio         String?
+  order       Int     @default(0)
+  showOnHome  Boolean @default(false) // exactly 5 should be flagged true, enforced in app layer
+}
+
+// ============================================================
+// GALLERY
+// ============================================================
+
+model GalleryAlbum {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  coverImage String?
+  eventDate DateTime?
+  createdAt DateTime @default(now())
+
+  media     GalleryMedia[]
+}
+
+// type is one of: image, video
+model GalleryMedia {
+  id       String @id @default(cuid())
+  albumId  String
+  album    GalleryAlbum @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  type     String
+  url      String
+  caption  String?
+  order    Int    @default(0)
+}
+
+// ============================================================
+// HOMEPAGE / SITE SETTINGS
+// ============================================================
+
+// slot is one of: hero-1, hero-2, hero-3
+model Banner {
+  id          String  @id @default(cuid())
+  slot        String  @unique
+  eyebrow     String?
+  title       String
+  description String?
+  image       String?
+  ctaLabel    String?
+  ctaUrl      String?
+  order       Int     @default(0)
+}
+
+model SiteSetting {
+  key   String @id
+  value String
+}
