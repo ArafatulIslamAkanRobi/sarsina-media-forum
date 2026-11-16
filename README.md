@@ -35,4 +35,5 @@ npm run dev        # http://localhost:3000
 
 ## Status
 
-Early scaffolding in progress. See `/docs/architecture.md` for the full plan.
+- **Frontend (`/frontend`)** — public homepage and core pages built from the approved design direction (see `frontend/README.md`). Content is static/typed for now and marked as sample where unverified.
+- **Backend** — not started beyond the Prisma schema draft. See `/docs/architecture.md` for the full plan and open decisions.
