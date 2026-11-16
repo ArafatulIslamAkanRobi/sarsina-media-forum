@@ -715,3 +715,5 @@ a:hover .read-more svg, .read-more:hover svg { transform: translateX(3px); }
 
 /* Media that fills a flexible container */
 .event-card__media > .media, .donate-banner__media > .media { position: absolute; inset: 0; }
+
+[hidden] { display: none !important; }

@@ -172,14 +172,12 @@ export function Header() {
                   {item.label}
                   <ChevronDown aria-hidden />
                 </button>
-                {openAcc === item.href && (
-                  <ul className="drawer-sub">
-                    <li><Link href={item.href}>সকল তথ্য</Link></li>
-                    {item.children.map((c) => (
-                      <li key={c.href}><Link href={c.href}>{c.label}</Link></li>
-                    ))}
-                  </ul>
-                )}
+                <ul className="drawer-sub" hidden={openAcc !== item.href}>
+                  <li><Link href={item.href}>সকল তথ্য</Link></li>
+                  {item.children.map((c) => (
+                    <li key={c.href}><Link href={c.href}>{c.label}</Link></li>
+                  ))}
+                </ul>
               </div>
             ) : (
               <Link key={item.href} href={item.href} className="drawer-link" aria-current={isActive(pathname, item.href) ? "page" : undefined}>

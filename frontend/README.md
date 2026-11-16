@@ -12,6 +12,17 @@ npm run dev          # http://localhost:3000
 
 Production check: `npm run build && npm start`.
 
+## Shareable preview
+
+A static, single-file copy of the whole site (used for the claude.ai preview link):
+
+```bash
+STATIC_EXPORT=1 npx next build
+python3 scripts/build-preview.py out preview   # → preview/index.html + site.css + preview.js + brand/
+```
+
+Pages become `#route` sections; `scripts/preview.js` re-implements the menu, slider and form validation without React. The role switcher on the dashboard is not interactive in this copy.
+
 ## Where things live
 
 | Path | What |
