@@ -86,6 +86,17 @@ Brand assets available in `/design-reference/brand-assets/`: official Sarsina Me
 - Nothing is wired to a backend: login, newsletter, donation payment and dashboard submissions show honest "not connected yet" states.
 - Address set to "নেছারাবাদ, পিরোজপুর" in `frontend/src/content/site.ts` — the mockup said "পাইকগাছা, খুলনা"; verify with the user.
 
+## 6c. Backend progress (Nov 2026)
+
+User confirmed **Laravel + MySQL**; admin panel = **Filament 4** (option (a) in §3). The old Express/Prisma scaffold was removed; the Prisma schema is kept as a reference at `docs/reference/schema.prisma`.
+
+- Tables: users (+member_id, approval), news, authors, articles, mahfils, donation_funds/projects/project_updates/donations, team_members, institutions, organizations, hero_slides, homepage_sections, site_settings, newsletter_subscribers, Spatie permission tables, Sanctum tokens.
+- RBAC: 10 roles from the Master Prompt + a `users` module for account approval (`app/Support/Rbac.php`).
+- Review workflow enforced in the model layer, not just the UI.
+- 22 feature tests (`php artisan test`).
+- Environment note: in the cloud sandbox, GitHub zip downloads are blocked, so Composer falls back to git clones (slow, ~1 GB vendor). Normal machines/hosting are unaffected.
+- Next: point `frontend/src/lib/content.ts` at the API (`NEXT_PUBLIC_API_URL`), wire login/newsletter/donation forms, then gallery + publications modules.
+
 ## 7. Build sequence (once unblocked)
 
 1. Verify network + push access work (see §2).

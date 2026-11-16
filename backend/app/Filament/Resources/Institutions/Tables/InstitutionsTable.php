@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Filament\Resources\Institutions\Tables;
+
+use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
+class InstitutionsTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table->reorderable('sort_order')->defaultSort('sort_order')->columns([
+            ImageColumn::make('image')->label('')->disk('public'),
+            TextColumn::make('name')->label('নাম')->searchable(),
+            TextColumn::make('description')->label('বিবরণ')->limit(60)->color('gray'),
+        ])->recordActions([EditAction::make()]);
+    }
+}
